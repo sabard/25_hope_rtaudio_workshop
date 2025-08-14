@@ -1,0 +1,69 @@
+---
+title: Realtime Audio Processing with LiCoRICE
+author: Sabar Dasgupta
+format: 
+  revealjs:
+    theme: solarized
+    navigation-mode: vertical
+---
+
+
+## What is realtime audio proecessing?
+
+Realtime:
+ 	- realtime =! fast
+ 	- realtime = reliable
+ 	- realtime is all about timing guarantees
+ 	- Simulink, QNX, custom hardware (examples?)
+ 	- RT Linux kernel patch
+ 	- 
+
+Audio processing
+	- Audio signals (compressive sound waves)
+	- converted to electronic signals 
+		- analog: represented by voltage levels
+		- digital: voltage levels discretized and stored as floating point values
+
+## Tools and technologies
+
+- analog synths
+	- most clear; simple in a lot of ways
+	- expensive, lots of gear
+- Digital signal processing (DSP)
+	- difficult
+	- compromise between flexibility of software and 
+- Python
+	- powerful
+	- memory and timing issues
+- LiCORICE
+	- attempt at having the best of both
+
+
+## Demo
+
+- take MIDI input from keyboard
+- generate audio
+- take MIDI input from sliders
+- modulate audio
+- output audio over default channel
+- split out to oscilloscope. can use audio splitter?
+
+## Setup
+
+- have everyone instlal LiCoRICE
+- troubleshoot
+- see if folks can run sine_wave demo
+
+## Making updates
+
+- simple changes to module code
+- new filters, etc.
+- more advanced filter (autotune?)
+- driver: take in microphone data
+- custom driver?
+
+## Future 
+
+- issues
+- contributing
+- thanks!s
