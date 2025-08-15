@@ -28,8 +28,74 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
-  <link rel="stylesheet" href="rt_audio_files/libs/revealjs/dist/theme/quarto-8a5cdbf101a0845817b98f2425171703.css">
+  <link rel="stylesheet" href="rt_audio_files/libs/revealjs/dist/theme/quarto-0f97c4353d5e176fc5a93f3e21099fba.css">
   <link href="rt_audio_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="rt_audio_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="rt_audio_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -126,7 +192,7 @@
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="quarto-title-block center">
+<section id="title-slide" class="quarto-title-block">
   <h1 class="title">Realtime Audio Processing with LiCoRICE</h1>
 
 <div class="quarto-title-authors">
@@ -138,69 +204,267 @@ Sabar Dasgupta
 </div>
 
 </section>
-<section id="what-is-realtime-audio-proecessing" class="slide level2">
-<h2>What is realtime audio proecessing?</h2>
-<p>Realtime: - realtime =! fast - realtime = reliable - realtime is all about timing guarantees - Simulink, QNX, custom hardware (examples?) - RT Linux kernel patch -</p>
-<p>Audio processing - Audio signals (compressive sound waves) - converted to electronic signals - analog: represented by voltage levels - digital: voltage levels discretized and stored as floating point values</p>
+<section>
+<section id="what-is-realtime-audio-processing" class="title-slide slide level1">
+<h1>What is realtime audio processing?</h1>
+
 </section>
-<section id="tools-and-technologies" class="slide level2">
-<h2>Tools and technologies</h2>
+<section id="realtime" class="slide level2">
+<h2>Realtime</h2>
+<ul>
+<li>realtime =! fast</li>
+<li>realtime == reliable; timing guarantees</li>
+<li>hard vs soft realtime</li>
+<li>Simulink, QNX, Zephyr (RTOS)</li>
+<li>RT Linux kernel patch</li>
+</ul>
+<p><em>“Realtime systems must guarantee a response within a specified time constraint [or] deadline”</em> -Wikipedia</p>
+</section>
+<section id="audio-processing" class="slide level2">
+<h2>Audio processing</h2>
+<div id="audio-processing" class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<ul>
+<li>Audio signals (compressive sound waves)</li>
+<li>converted to electronic signals
+<ul>
+<li>analog: represented by voltage levels</li>
+<li>digital: voltage levels discretized and stored as floating point values</li>
+</ul></li>
+</ul>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img data-src="./sampling.png"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="audio-processing-1" class="slide level2">
+<h2>Audio processing</h2>
+<ul>
+<li>Nyquist rate</li>
+<li>filtering</li>
+<li>time domain vs.&nbsp;frequency domain</li>
+<li>source separation</li>
+</ul>
+<p><a href="https://docs.google.com/presentation/d/1CvRiJTpDiuUkAknx5A2bH9nBg-73RRBXDsJn0yIgGTU/edit?slide=id.p#slide=id.p">Audio Processing Intro + Examples slides</a></p>
+</section></section>
+<section id="tools-and-technologies" class="title-slide slide level1">
+<h1>Tools and technologies</h1>
 <ul>
 <li>analog synths
 <ul>
-<li>most clear</li>
-<li>expensive, lots of gera</li>
+<li>manipulate voltage signals directly via circuitry</li>
+<li>expensive, lots of gear</li>
 </ul></li>
-<li>DSP
+<li>digital signal processing (DSP)
 <ul>
-<li>difficult</li>
+<li>manipulate digital representations of signals</li>
+<li>specialized instruction sets require high level of expertise</li>
 </ul></li>
-<li>Python
+<li>Python script
 <ul>
-<li>powerful</li>
+<li>manipulate audio with the help of numpy, scipy, librosa, etc.</li>
 <li>memory and timing issues</li>
 </ul></li>
-<li>LiCORICE
+<li>LiCoRICE
 <ul>
-<li>attempt at having the best of both</li>
+<li>Python environment</li>
+<li>realtime guarantees</li>
 </ul></li>
 </ul>
 </section>
-<section id="demo" class="slide level2">
-<h2>Demo</h2>
+
+<section id="demo" class="title-slide slide level1">
+<h1>Demo</h1>
 <ul>
 <li>take MIDI input from keyboard</li>
 <li>generate audio</li>
-<li>take MIDI input from sliders</li>
-<li>modulate audio</li>
+<li>manipulate audio</li>
 <li>output audio over default channel</li>
-<li>split out to oscilloscope. can use audio splitter?</li>
+<li>split audio to oscilloscope and speaker</li>
 </ul>
 </section>
-<section id="setup" class="slide level2">
-<h2>Setup</h2>
+
+<section>
+<section id="licorice-overview" class="title-slide slide level1">
+<h1>LiCoRICE Overview</h1>
+<p><a href="https://docs.licorice.su.domains/">Documentation</a></p>
+<p><a href="https://github.com/bil/licorice">Github repository</a></p>
+<p><a href="https://dl.acm.org/doi/10.1145/3211332.3211344">LCTES 2018 Conference paper</a>, contact Sabar for PDF</p>
+</section>
+<section id="model-based-deisgn" class="slide level2">
+<h2>Model-based deisgn</h2>
+<div id="model-based-design" class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <ul>
-<li>have everyone instlal LiCoRICE</li>
-<li>troubleshoot</li>
-<li>see if folks can run sine_wave demo</li>
+<li>directed acyclic graph</li>
+<li>sources, modules, and sinks</li>
+<li>internal numpy signals</li>
+<li>external inputs and outputs</li>
 </ul>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img data-src="licorice_dag.png"></p>
+</div>
+</div>
+</div>
 </section>
-<section id="making-updates" class="slide level2">
-<h2>Making updates</h2>
+<section id="model-file" class="slide level2">
+<h2>Model file</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource yaml number-lines code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href=""></a><span class="co"># matrix_multiply</span></span>
+<span id="cb1-2"><a href=""></a><span class="co">#</span></span>
+<span id="cb1-3"><a href=""></a><span class="co"># A model that demonstrates the math capabilities of LiCoRICE</span></span>
+<span id="cb1-4"><a href=""></a><span class="co"># The math operations performed by the matmul module are statically compiled against BLAS/LAPACK using numba's pycc</span></span>
+<span id="cb1-5"><a href=""></a><span class="co">#</span></span>
+<span id="cb1-6"><a href=""></a><span class="co"># Note: model configuration is still in alpha stage and subject to cosmetic changes</span></span>
+<span id="cb1-7"><a href=""></a><span class="co">#</span></span>
+<span id="cb1-8"><a href=""></a></span>
+<span id="cb1-9"><a href=""></a><span class="fu">config</span><span class="kw">:</span></span>
+<span id="cb1-10"><a href=""></a><span class="at">  </span><span class="fu">tick_len</span><span class="kw">:</span><span class="at"> </span><span class="dv">10000</span></span>
+<span id="cb1-11"><a href=""></a><span class="at">  </span><span class="fu">num_ticks</span><span class="kw">:</span><span class="at"> </span><span class="dv">30</span></span>
+<span id="cb1-12"><a href=""></a><span class="at">  </span><span class="fu">source_init_ticks</span><span class="kw">:</span><span class="at"> </span><span class="dv">10</span></span>
+<span id="cb1-13"><a href=""></a></span>
+<span id="cb1-14"><a href=""></a><span class="fu">signals</span><span class="kw">:</span></span>
+<span id="cb1-15"><a href=""></a></span>
+<span id="cb1-16"><a href=""></a><span class="at">  </span><span class="fu">m1</span><span class="kw">:</span></span>
+<span id="cb1-17"><a href=""></a><span class="at">    </span><span class="fu">shape</span><span class="kw">:</span><span class="at"> (4, 4)</span></span>
+<span id="cb1-18"><a href=""></a><span class="at">    </span><span class="fu">dtype</span><span class="kw">:</span><span class="at"> float64</span></span>
+<span id="cb1-19"><a href=""></a><span class="at">    </span><span class="fu">history</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb1-20"><a href=""></a></span>
+<span id="cb1-21"><a href=""></a><span class="at">  </span><span class="fu">m2</span><span class="kw">:</span></span>
+<span id="cb1-22"><a href=""></a><span class="at">    </span><span class="fu">shape</span><span class="kw">:</span><span class="at"> (4, 4)</span></span>
+<span id="cb1-23"><a href=""></a><span class="at">    </span><span class="fu">dtype</span><span class="kw">:</span><span class="at"> float64</span></span>
+<span id="cb1-24"><a href=""></a><span class="at">    </span><span class="fu">history</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb1-25"><a href=""></a></span>
+<span id="cb1-26"><a href=""></a><span class="at">  </span><span class="fu">matmul_out</span><span class="kw">:</span></span>
+<span id="cb1-27"><a href=""></a><span class="at">    </span><span class="fu">shape</span><span class="kw">:</span><span class="at"> (4, 4)</span></span>
+<span id="cb1-28"><a href=""></a><span class="at">    </span><span class="fu">dtype</span><span class="kw">:</span><span class="at"> float64</span></span>
+<span id="cb1-29"><a href=""></a><span class="at">    </span><span class="fu">history</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb1-30"><a href=""></a><span class="at">    </span><span class="fu">log</span><span class="kw">:</span><span class="at"> </span><span class="ch">True</span></span>
+<span id="cb1-31"><a href=""></a></span>
+<span id="cb1-32"><a href=""></a><span class="fu">modules</span><span class="kw">:</span></span>
+<span id="cb1-33"><a href=""></a></span>
+<span id="cb1-34"><a href=""></a><span class="at">  </span><span class="fu">matmul_init</span><span class="kw">:</span></span>
+<span id="cb1-35"><a href=""></a><span class="at">    </span><span class="fu">language</span><span class="kw">:</span><span class="at"> python</span></span>
+<span id="cb1-36"><a href=""></a><span class="at">    </span><span class="fu">constructor</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span><span class="co">       # this permits the use of constructor code to intialize the module</span></span>
+<span id="cb1-37"><a href=""></a><span class="co">                            # constructors only execute once, before the ticks have begun</span></span>
+<span id="cb1-38"><a href=""></a><span class="at">    </span><span class="fu">out</span><span class="kw">:</span></span>
+<span id="cb1-39"><a href=""></a><span class="at">      </span><span class="kw">-</span><span class="at"> m1</span></span>
+<span id="cb1-40"><a href=""></a><span class="at">      </span><span class="kw">-</span><span class="at"> m2</span></span>
+<span id="cb1-41"><a href=""></a></span>
+<span id="cb1-42"><a href=""></a><span class="at">  </span><span class="fu">matmul</span><span class="kw">:</span><span class="co">                   # define the module</span></span>
+<span id="cb1-43"><a href=""></a><span class="at">    </span><span class="fu">language</span><span class="kw">:</span><span class="at"> python</span><span class="co">        # language the module is written in</span></span>
+<span id="cb1-44"><a href=""></a><span class="at">    </span><span class="fu">numba</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span><span class="co">             # compile module using numba.pycc (if true, only a subset of python is permitted, but code is statically compiled with BLAS/LAPACK support)</span></span>
+<span id="cb1-45"><a href=""></a><span class="at">    </span><span class="fu">in</span><span class="kw">:</span></span>
+<span id="cb1-46"><a href=""></a><span class="at">      </span><span class="kw">-</span><span class="at"> m1</span></span>
+<span id="cb1-47"><a href=""></a><span class="at">      </span><span class="kw">-</span><span class="at"> m2</span></span>
+<span id="cb1-48"><a href=""></a><span class="at">    </span><span class="fu">out</span><span class="kw">:</span></span>
+<span id="cb1-49"><a href=""></a><span class="at">      </span><span class="kw">-</span><span class="at"> matmul_out</span></span>
+<span id="cb1-50"><a href=""></a></span>
+<span id="cb1-51"><a href=""></a><span class="at">  </span><span class="fu">matmul_print</span><span class="kw">:</span></span>
+<span id="cb1-52"><a href=""></a><span class="at">    </span><span class="fu">language</span><span class="kw">:</span><span class="at"> python</span></span>
+<span id="cb1-53"><a href=""></a></span>
+<span id="cb1-54"><a href=""></a><span class="at">    </span><span class="fu">in</span><span class="kw">:</span></span>
+<span id="cb1-55"><a href=""></a><span class="at">      </span><span class="kw">-</span><span class="at"> matmul_out</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="module-file" class="slide level2">
+<h2>Module file</h2>
+<h3 id="matmul_init_constructor.py">matmul_init_constructor.py</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href=""></a><span class="co"># import numpy as np # numpy already imported in module template</span></span>
+<span id="cb2-2"><a href=""></a></span>
+<span id="cb2-3"><a href=""></a>m1_init <span class="op">=</span> np.random.rand(<span class="dv">4</span>, <span class="dv">4</span>)</span>
+<span id="cb2-4"><a href=""></a>m2_init <span class="op">=</span> np.random.rand(<span class="dv">4</span>, <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<h3 id="matmul_init.py">matmul_init.py</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a><span class="co"># if init only happens on first tick, only writes to first slot in history</span></span>
+<span id="cb3-2"><a href=""></a>m1[:, :] <span class="op">=</span> m1_init[:, :]</span>
+<span id="cb3-3"><a href=""></a>m2[:, :] <span class="op">=</span> m2_init[:, :]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<h3 id="matmul.py">matmul.py</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a>matmul_out[:, :] <span class="op">=</span> np.dot(m1, m2)[:, :]</span>
+<span id="cb4-2"><a href=""></a><span class="co"># the [:,:] notation must be used or Python will create a new matmul_out</span></span>
+<span id="cb4-3"><a href=""></a><span class="co"># variable instead of copying the data into the array mapped by matmul_out</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<h3 id="matmul_print.py">matmul_print.py</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href=""></a><span class="cf">if</span> pNumTicks[<span class="dv">0</span>] <span class="op">&gt;=</span> <span class="dv">0</span> <span class="kw">and</span> <span class="kw">not</span> pNumTicks[<span class="dv">0</span>] <span class="op">%</span> <span class="dv">5</span>:</span>
+<span id="cb5-2"><a href=""></a></span>
+<span id="cb5-3"><a href=""></a>    <span class="bu">print</span>(matmul_out.shape, flush<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-4"><a href=""></a>    <span class="bu">print</span>(matmul_out[:, :], flush<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="timings" class="slide level2">
+<h2>Timings</h2>
+<div id="timings" class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <ul>
-<li>simple changes to module code</li>
-<li>new filters, etc.</li>
-<li>more advanced filter (autotune?)</li>
-<li>driver: take in microphone data</li>
-<li>custom driver?</li>
+<li>ticks</li>
+<li>measuring jitter</li>
+<li>synchronization</li>
+</ul>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img data-src="licorice_timings.png"></p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="setup" class="title-slide slide level1">
+<h1>Setup</h1>
+<p><a href="https://docs.licorice.su.domains">LiCoRICE documentation</a></p>
+<p>Install Python (if not installed):</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href=""></a><span class="ex">curl</span> https://pyenv.run <span class="kw">|</span> <span class="fu">bash</span></span>
+<span id="cb6-2"><a href=""></a><span class="ex">pyenv</span> install 3.8.12 </span>
+<span id="cb6-3"><a href=""></a><span class="ex">pyenv</span> virtualenv 3.8.12 licorice-audio</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Let me know if you’re having issues!</p>
+</section>
+<section id="install-licorice" class="slide level2">
+<h2>Install LiCoRICE</h2>
+<p>Install latest version from source:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href=""></a><span class="ex">pip</span> install https://github.com/bil/licorice</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Install versioned release:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href=""></a><span class="ex">pip</span> install licorice</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section></section>
+<section>
+<section id="testing-your-setup" class="title-slide slide level1">
+<h1>Testing your setup</h1>
+<p>Print out the help options:</p>
+<pre><code>licorice -h</code></pre>
+</section>
+<section id="run-sine_wave-demo" class="slide level2">
+<h2>Run <code>sine_wave</code> demo</h2>
+<ol type="1">
+<li><p>Install git if not installed</p></li>
+<li><p>Clone LiCoRICE examples</p></li>
+</ol>
+<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href=""></a><span class="bu">cd</span> <span class="op">&lt;</span>folder-to-install-licorice<span class="op">&gt;</span></span>
+<span id="cb10-2"><a href=""></a><span class="fu">git</span> clone https://github.com/bil/licorice</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="3" type="1">
+<li>Run sine wave example</li>
+</ol>
+<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href=""></a><span class="ex">./examples/sine/run.sh</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section></section>
+<section id="making-updates" class="title-slide slide level1">
+<h1>Making updates</h1>
+<p>How do you want to modify the audio signal?</p>
+<p>Some examples:</p>
+<ul>
+<li>new filters; changing filter parameters</li>
+<li>introduce noise</li>
+<li>audio effects libraries</li>
+<li>autotune</li>
+<li>in-built driver: read in microphone data</li>
+<li>custom drivers</li>
 </ul>
 </section>
-<section id="future" class="slide level2">
-<h2>Future</h2>
+
+<section id="thank-you" class="title-slide slide level1">
+<h1>Thank you!</h1>
+<p>Engaging with LiCoRICE:</p>
 <ul>
 <li>issues</li>
 <li>contributing</li>
-<li>thanks!s</li>
+<li>sharing drivers</li>
 </ul>
 
 </section>
@@ -385,9 +649,9 @@ Sabar Dasgupta
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
-        width: 1050,
+        width: 1920,
 
-        height: 700,
+        height: 1080,
 
         // Factor of the display size that should remain empty around the content
         margin: 0.1,

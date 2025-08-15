@@ -1,69 +1,273 @@
 ---
 title: Realtime Audio Processing with LiCoRICE
+center-title-slide: false
 author: Sabar Dasgupta
 format: 
   revealjs:
     theme: solarized
     navigation-mode: vertical
+    width: 1920
+    height: 1080
+    code-block-height: 1000px
 ---
 
 
-## What is realtime audio proecessing?
+# What is realtime audio processing?
 
-Realtime:
- 	- realtime =! fast
- 	- realtime = reliable
- 	- realtime is all about timing guarantees
- 	- Simulink, QNX, custom hardware (examples?)
- 	- RT Linux kernel patch
- 	- 
+## Realtime
 
-Audio processing
-	- Audio signals (compressive sound waves)
-	- converted to electronic signals 
-		- analog: represented by voltage levels
-		- digital: voltage levels discretized and stored as floating point values
+- realtime =! fast
+- realtime == reliable; timing guarantees
+- hard vs soft realtime
+- Simulink, QNX, Zephyr (RTOS)
+- RT Linux kernel patch
 
-## Tools and technologies
+*"Realtime systems must guarantee a response within a specified time constraint [or] deadline"* -Wikipedia
+
+
+## Audio processing
+
+::: {#audio-processing layout-ncol=2}
+- Audio signals (compressive sound waves)
+- converted to electronic signals 
+	- analog: represented by voltage levels
+	- digital: voltage levels discretized and stored as floating point values
+
+![](./sampling.png)
+:::
+
+## Audio processing
+
+- Nyquist rate
+- filtering
+- time domain vs. frequency domain
+- source separation
+
+[Audio Processing Intro + Examples slides](https://docs.google.com/presentation/d/1CvRiJTpDiuUkAknx5A2bH9nBg-73RRBXDsJn0yIgGTU/edit?slide=id.p#slide=id.p)
+
+# Tools and technologies
 
 - analog synths
-	- most clear; simple in a lot of ways
+	- manipulate voltage signals directly via circuitry
 	- expensive, lots of gear
-- Digital signal processing (DSP)
-	- difficult
-	- compromise between flexibility of software and 
-- Python
-	- powerful
+- digital signal processing (DSP)
+	- manipulate digital representations of signals
+	- specialized instruction sets require high level of expertise
+- Python script
+	- manipulate audio with the help of numpy, scipy, librosa, etc.
 	- memory and timing issues
-- LiCORICE
-	- attempt at having the best of both
+- LiCoRICE
+	- Python environment
+	- realtime guarantees
 
 
-## Demo
+# Demo
 
 - take MIDI input from keyboard
 - generate audio
-- take MIDI input from sliders
-- modulate audio
+- manipulate audio
 - output audio over default channel
-- split out to oscilloscope. can use audio splitter?
+- split audio to oscilloscope and speaker
 
-## Setup
+# LiCoRICE Overview
 
-- have everyone instlal LiCoRICE
-- troubleshoot
-- see if folks can run sine_wave demo
+[Documentation](https://docs.licorice.su.domains/)
 
-## Making updates
+[Github repository](https://github.com/bil/licorice)
 
-- simple changes to module code
-- new filters, etc.
-- more advanced filter (autotune?)
-- driver: take in microphone data
-- custom driver?
+[LCTES 2018 Conference paper](https://dl.acm.org/doi/10.1145/3211332.3211344), contact Sabar for PDF
 
-## Future 
+## Model-based deisgn
+
+::: {#model-based-design layout-ncol=2}
+
+- directed acyclic graph
+- sources, modules, and sinks
+- internal numpy signals
+- external inputs and outputs
+
+![](licorice_dag.png)
+::: 
+
+## Model file
+
+```yaml
+# matrix_multiply
+#
+# A model that demonstrates the math capabilities of LiCoRICE
+# The math operations performed by the matmul module are statically compiled against BLAS/LAPACK using numba's pycc
+#
+# Note: model configuration is still in alpha stage and subject to cosmetic changes
+#
+
+config:
+  tick_len: 10000
+  num_ticks: 30
+  source_init_ticks: 10
+
+signals:
+
+  m1:
+    shape: (4, 4)
+    dtype: float64
+    history: 1
+
+  m2:
+    shape: (4, 4)
+    dtype: float64
+    history: 1
+
+  matmul_out:
+    shape: (4, 4)
+    dtype: float64
+    history: 1
+    log: True
+
+modules:
+
+  matmul_init:
+    language: python
+    constructor: true       # this permits the use of constructor code to intialize the module
+                            # constructors only execute once, before the ticks have begun
+    out:
+      - m1
+      - m2
+
+  matmul:                   # define the module
+    language: python        # language the module is written in
+    numba: true             # compile module using numba.pycc (if true, only a subset of python is permitted, but code is statically compiled with BLAS/LAPACK support)
+    in:
+      - m1
+      - m2
+    out:
+      - matmul_out
+
+  matmul_print:
+    language: python
+
+    in:
+      - matmul_out
+
+```
+
+## Module file
+
+### matmul_init_constructor.py
+
+```python
+# import numpy as np # numpy already imported in module template
+
+m1_init = np.random.rand(4, 4)
+m2_init = np.random.rand(4, 4)
+```
+
+### matmul_init.py
+
+```python
+# if init only happens on first tick, only writes to first slot in history
+m1[:, :] = m1_init[:, :]
+m2[:, :] = m2_init[:, :]
+```
+
+### matmul.py
+
+```python
+matmul_out[:, :] = np.dot(m1, m2)[:, :]
+# the [:,:] notation must be used or Python will create a new matmul_out
+# variable instead of copying the data into the array mapped by matmul_out
+```
+
+### matmul_print.py
+
+```python
+if pNumTicks[0] >= 0 and not pNumTicks[0] % 5:
+
+    print(matmul_out.shape, flush=True)
+    print(matmul_out[:, :], flush=True)
+```
+
+## Timings
+
+::: {#timings layout-ncol=2}
+
+- ticks
+- measuring jitter
+- synchronization
+
+![](licorice_timings.png)
+:::
+
+# Setup
+
+[LiCoRICE documentation](https://docs.licorice.su.domains)
+
+Install Python (if not installed):
+
+```bash
+curl https://pyenv.run | bash
+pyenv install 3.8.12 
+pyenv virtualenv 3.8.12 licorice-audio
+```
+
+Let me know if you're having issues!
+
+
+## Install LiCoRICE 
+
+Install latest version from source:
+
+```bash
+pip install https://github.com/bil/licorice
+```
+
+Install versioned release:
+
+```bash
+pip install licorice
+```
+
+# Testing your setup
+
+Print out the help options:
+
+```
+licorice -h
+```
+
+## Run `sine_wave` demo
+
+1. Install git if not installed
+
+2. Clone LiCoRICE examples
+
+```bash
+cd <folder-to-install-licorice>
+git clone https://github.com/bil/licorice
+```
+
+3. Run sine wave example
+
+```bash
+./examples/sine/run.sh
+```
+
+# Making updates
+
+How do you want to modify the audio signal?
+
+Some examples:
+
+- new filters; changing filter parameters
+- introduce noise
+- audio effects libraries
+- autotune
+- in-built driver: read in microphone data
+- custom drivers
+
+# Thank you! 
+
+Engaging with LiCoRICE:
 
 - issues
-- contributing
-- thanks!s
+- contributing 
+- sharing drivers
