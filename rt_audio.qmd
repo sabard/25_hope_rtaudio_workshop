@@ -217,7 +217,7 @@ Let me know if you're having issues!
 Install latest version from source:
 
 ```bash
-pip install https://github.com/bil/licorice
+pip install git+https://github.com/bil/licorice@main
 ```
 
 Install versioned release:
@@ -225,6 +225,23 @@ Install versioned release:
 ```bash
 pip install licorice
 ```
+\
+
+### Set permissions (Linux)
+
+Create a file `/etc/security/limits.d/licorice.conf` with the following contents, replacing <user> with your system username:
+
+```
+<user> - rtprio 95
+<user> - memlock unlimited
+<user> - nice -20
+```
+
+
+## Advanced setup
+
+- Kernel hacking
+- 
 
 # Testing your setup
 
@@ -241,15 +258,34 @@ licorice -h
 2. Clone LiCoRICE examples
 
 ```bash
-cd <folder-to-install-licorice>
+cd <folder-to-clone-licorice>
 git clone https://github.com/bil/licorice
 ```
 
 3. Run sine wave example
 
 ```bash
+cd licorice
 ./examples/sine/run.sh
 ```
+
+<!--
+## Run workshop demo
+
+1. Clone demo
+
+```bash
+cd <folder-to-clone-demo>
+git clone https://github.com/sabard/25_hope_workshop_code
+```
+
+2. Run demo
+
+```bash
+cd 25_hope_workshop_code
+./examples/sine/run.sh
+```
+-->
 
 # Making updates
 

@@ -421,9 +421,23 @@ Sabar Dasgupta
 <section id="install-licorice" class="slide level2">
 <h2>Install LiCoRICE</h2>
 <p>Install latest version from source:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href=""></a><span class="ex">pip</span> install https://github.com/bil/licorice</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href=""></a><span class="ex">pip</span> install git+https://github.com/bil/licorice@main</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Install versioned release:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href=""></a><span class="ex">pip</span> install licorice</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><br>
+</p>
+<h3 id="set-permissions-linux">Set permissions (Linux)</h3>
+<p>Create a file <code>/etc/security/limits.d/licorice.conf</code> with the following contents, replacing <user> with your system username:</user></p>
+<pre><code>&lt;user&gt; - rtprio 95
+&lt;user&gt; - memlock unlimited
+&lt;user&gt; - nice -20</code></pre>
+</section>
+<section id="advanced-setup" class="slide level2">
+<h2>Advanced setup</h2>
+<ul>
+<li>Kernel hacking</li>
+<li></li>
+</ul>
 </section></section>
 <section>
 <section id="testing-your-setup" class="title-slide slide level1">
@@ -437,12 +451,30 @@ Sabar Dasgupta
 <li><p>Install git if not installed</p></li>
 <li><p>Clone LiCoRICE examples</p></li>
 </ol>
-<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href=""></a><span class="bu">cd</span> <span class="op">&lt;</span>folder-to-install-licorice<span class="op">&gt;</span></span>
-<span id="cb10-2"><a href=""></a><span class="fu">git</span> clone https://github.com/bil/licorice</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href=""></a><span class="bu">cd</span> <span class="op">&lt;</span>folder-to-clone-licorice<span class="op">&gt;</span></span>
+<span id="cb11-2"><a href=""></a><span class="fu">git</span> clone https://github.com/bil/licorice</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <ol start="3" type="1">
 <li>Run sine wave example</li>
 </ol>
-<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href=""></a><span class="ex">./examples/sine/run.sh</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href=""></a><span class="bu">cd</span> licorice</span>
+<span id="cb12-2"><a href=""></a><span class="ex">./examples/sine/run.sh</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<!--
+## Run workshop demo
+
+1. Clone demo
+
+```bash
+cd <folder-to-clone-demo>
+git clone https://github.com/sabard/25_hope_workshop_code
+```
+
+2. Run demo
+
+```bash
+cd 25_hope_workshop_code
+./examples/sine/run.sh
+```
+-->
 </section></section>
 <section id="making-updates" class="title-slide slide level1">
 <h1>Making updates</h1>
